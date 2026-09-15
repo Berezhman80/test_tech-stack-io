@@ -1,0 +1,30 @@
+{
+  "name": "test_tech-stack-io",
+  "version": "1.0.0",
+  "description": "Test automation project for the tech-stack.io website.",
+  "homepage": "https://github.com/Berezhman80/test_tech-stack-io#readme",
+  "bugs": {
+    "url": "https://github.com/Berezhman80/test_tech-stack-io/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Berezhman80/test_tech-stack-io.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^26.5.0"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "typescript": "^7.0.2"
+  }
+}
