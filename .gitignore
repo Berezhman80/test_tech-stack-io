@@ -16,6 +16,7 @@ node_modules/
 # IDE
 .idea/
 .vscode/
+.cursor/mcp.json
 
 # Operating system
 .DS_Store
