@@ -2,10 +2,11 @@
 node_modules/
 
 # Playwright
-test-results/
-playwright-report/
-blob-report/
-playwright/.cache/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
 
 # Environment variables
 .env
@@ -15,6 +16,7 @@ playwright/.cache/
 # IDE
 .idea/
 .vscode/
+.cursor/mcp.json
 
 # Operating system
 .DS_Store
