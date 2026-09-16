@@ -3,7 +3,9 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-dotenv.config({ path: path.resolve(path.dirname(fileURLToPath(import.meta.url)), '.env') });
+dotenv.config({
+  path: path.resolve(path.dirname(fileURLToPath(import.meta.url)), '.env'),
+});
 
 export default defineConfig({
   testDir: './testsUI/automation',
@@ -27,13 +29,13 @@ export default defineConfig({
     //   name: 'chrome',
     //   use: { channel: 'chrome', headless: false },
     // },
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
+    // {
+    //   name: "firefox",
+    //   use: { ...devices["Desktop Firefox"] },
+    // },
+    // {
+    //   name: "webkit",
+    //   use: { ...devices["Desktop Safari"] },
+    // },
   ],
 });
