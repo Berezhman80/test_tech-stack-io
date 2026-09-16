@@ -3,52 +3,67 @@ import SignInPage from '../locators/pages/signInPage.js';
 import { HomeSteps } from '../steps/homeSteps.js';
 import { LoginSteps } from '../steps/loginSteps.js';
 
-test('Check that Login Works', async ({ page }) => {
-  const loginSteps = new LoginSteps(page);
-  const homeSteps = new HomeSteps(page);
+test.describe('Login', () => {
+  test('Check that Login Works', async ({ page }) => {
+    const loginSteps = new LoginSteps(page);
+    const homeSteps = new HomeSteps(page);
 
-  await loginSteps.openLoginPage();
-  await loginSteps.loginWithValidCredentials();
+    await loginSteps.openLoginPage();
+    await loginSteps.loginWithValidCredentials();
 
-  await homeSteps.expectHomePageLoaded('Trainees website');
-});
+    await homeSteps.expectHomePageLoaded('Trainees website');
+  });
 
-test('Check that Logout Works', async ({ page }) => {
-  const loginSteps = new LoginSteps(page);
-  const homeSteps = new HomeSteps(page);
+  test('Check that Logout Works', async ({ page }) => {
+    const loginSteps = new LoginSteps(page);
+    const homeSteps = new HomeSteps(page);
 
-  await loginSteps.openLoginPage();
-  await loginSteps.loginWithValidCredentials();
-  await homeSteps.expectHomePageLoaded('Trainees website');
-  await homeSteps.clickLogout();
+    await loginSteps.openLoginPage();
+    await loginSteps.loginWithValidCredentials();
 
-  await expect(page.locator(SignInPage.title)).toBeVisible();
-});
+    await homeSteps.expectHomePageLoaded('Trainees website');
 
-test('Check that empty fields show required confirmations', async ({ page }) => {
-  const loginSteps = new LoginSteps(page);
+    // Playwright готується обробити системне вікно
+    page.once('dialog', async (dialog) => {
+      expect(dialog.type()).toBe('confirm');
+      expect(dialog.message()).toBe('Are you sure you want to log out?');
 
-  await loginSteps.openLoginPage();
-  await loginSteps.submitEmptyForm();
+      // Натиснути OK
+      await dialog.accept();
+    });
 
-  await loginSteps.expectUsernameRequiredMessage();
-  await loginSteps.expectPasswordRequiredMessage();
-});
+    // Після цього натискання з’явиться системне вікно
+    await homeSteps.clickLogout();
 
-test('Check that empty username shows confirmation', async ({ page }) => {
-  const loginSteps = new LoginSteps(page);
+    // Перевірка успішного виходу
+    await expect(page.locator(SignInPage.title)).toBeVisible();
+  });
 
-  await loginSteps.openLoginPage();
-  await loginSteps.submitWithPasswordOnly();
+  test('Check that empty fields show required confirmations', async ({ page }) => {
+    const loginSteps = new LoginSteps(page);
 
-  await loginSteps.expectUsernameRequiredMessage();
-});
+    await loginSteps.openLoginPage();
+    await loginSteps.submitEmptyForm();
 
-test('Check empty password shows confirmation', async ({ page }) => {
-  const loginSteps = new LoginSteps(page);
+    await loginSteps.expectUsernameRequiredMessage();
+    await loginSteps.expectPasswordRequiredMessage();
+  });
 
-  await loginSteps.openLoginPage();
-  await loginSteps.submitWithUsernameOnly();
+  test('Check that empty username shows confirmation', async ({ page }) => {
+    const loginSteps = new LoginSteps(page);
 
-  await loginSteps.expectPasswordRequiredMessage();
+    await loginSteps.openLoginPage();
+    await loginSteps.submitWithPasswordOnly();
+
+    await loginSteps.expectUsernameRequiredMessage();
+  });
+
+  test('Check empty password shows confirmation', async ({ page }) => {
+    const loginSteps = new LoginSteps(page);
+
+    await loginSteps.openLoginPage();
+    await loginSteps.submitWithUsernameOnly();
+
+    await loginSteps.expectPasswordRequiredMessage();
+  });
 });
