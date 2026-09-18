@@ -1,3 +1,6 @@
+import Button from '../components/button.js';
+import Table from '../components/table.js';
+
 export default class HomePage {
   static heading = '//h1[normalize-space()="Users and Addresses"]';
   static subtitle =
@@ -26,4 +29,22 @@ export default class HomePage {
 
   static columnHeader = (tableTestId: string, name: string) =>
     `//*[@data-testid="${tableTestId}"]//th[normalize-space()="${name}"]`;
+
+  static userRow = (userName: string) =>
+    `//*[@data-testid="${Table.users}"]//tr[.//*[@data-testid="${Table.userName}" and normalize-space()="${userName}"]]`;
+
+  static userRowDelete = (userName: string) =>
+    `${HomePage.userRow(userName)}//*[@data-testid="${Button.delete}"]`;
+
+  static userNameCell = (userName: string) =>
+    `//*[@data-testid="${Table.users}"]//*[@data-testid="${Table.userName}" and normalize-space()="${userName}"]`;
+
+  static addressRow = (street: string) =>
+    `//*[@data-testid="${Table.addresses}"]//tr[.//*[@data-testid="${Table.streetAddress}" and normalize-space()="${street}"]]`;
+
+  static addressRowDelete = (street: string) =>
+    `${HomePage.addressRow(street)}//*[@data-testid="${Button.delete}"]`;
+
+  static streetAddressCell = (street: string) =>
+    `//*[@data-testid="${Table.addresses}"]//*[@data-testid="${Table.streetAddress}" and normalize-space()="${street}"]`;
 }
