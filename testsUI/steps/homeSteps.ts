@@ -30,9 +30,7 @@ export class HomeSteps {
   }
 
   async expectHomePageLoaded(expectedText: string): Promise<void> {
-    await expect(this.page.locator(HomePage.siteTitle)).toHaveText(
-      expectedText,
-    );
+    await expect(this.page.locator(HomePage.siteTitle)).toHaveText(expectedText);
   }
 
   async expectHeadingAndSubtitle(): Promise<void> {
@@ -42,12 +40,8 @@ export class HomeSteps {
 
   async expectHeaderNavigation(): Promise<void> {
     await expect(this.page.getByTestId(Button.homeButton)).toBeVisible();
-    await expect(
-      this.page.getByTestId(Header.root).getByTestId(Button.addUser),
-    ).toBeVisible();
-    await expect(
-      this.page.getByTestId(Header.root).getByTestId(Button.addAddress),
-    ).toBeVisible();
+    await expect(this.page.getByTestId(Header.root).getByTestId(Button.addUser)).toBeVisible();
+    await expect(this.page.getByTestId(Header.root).getByTestId(Button.addAddress)).toBeVisible();
     await expect(this.page.getByTestId(Button.logoutButton)).toBeVisible();
   }
 
@@ -56,21 +50,14 @@ export class HomeSteps {
     await expect(this.page.getByTestId(Table.users)).toBeVisible();
     await expect(this.page.locator(HomePage.addUserLink)).toBeVisible();
     for (const column of HomePage.usersColumns) {
-      await expect(
-        this.page.locator(HomePage.columnHeader(Table.users, column)),
-      ).toBeVisible();
+      await expect(this.page.locator(HomePage.columnHeader(Table.users, column))).toBeVisible();
     }
   }
 
   async expectUsersTotalMatchesRows(): Promise<void> {
-    const rowCount = await this.page
-      .getByTestId(Table.users)
-      .getByTestId(Table.userName)
-      .count();
+    const rowCount = await this.page.getByTestId(Table.users).getByTestId(Table.userName).count();
     expect(rowCount).toBeGreaterThan(0);
-    await expect(this.page.getByTestId(Table.usersTotal)).toHaveText(
-      `Total: ${rowCount}`,
-    );
+    await expect(this.page.getByTestId(Table.usersTotal)).toHaveText(`Total: ${rowCount}`);
   }
 
   async expectSeedUsers(): Promise<void> {
@@ -104,9 +91,7 @@ export class HomeSteps {
     await expect(this.page.getByTestId(Table.addresses)).toBeVisible();
     await expect(this.page.locator(HomePage.addAddressLink)).toBeVisible();
     for (const column of HomePage.addressesColumns) {
-      await expect(
-        this.page.locator(HomePage.columnHeader(Table.addresses, column)),
-      ).toBeVisible();
+      await expect(this.page.locator(HomePage.columnHeader(Table.addresses, column))).toBeVisible();
     }
   }
 
@@ -116,23 +101,15 @@ export class HomeSteps {
       .getByTestId(Table.streetAddress)
       .count();
     expect(rowCount).toBeGreaterThan(0);
-    await expect(this.page.getByTestId(Table.addressesTotal)).toHaveText(
-      `Total: ${rowCount}`,
-    );
+    await expect(this.page.getByTestId(Table.addressesTotal)).toHaveText(`Total: ${rowCount}`);
   }
 
   async openAddUserForm(): Promise<void> {
-    await this.page
-      .getByTestId(Header.root)
-      .getByTestId(Button.addUser)
-      .click();
+    await this.page.getByTestId(Header.root).getByTestId(Button.addUser).click();
   }
 
   async openAddAddressForm(): Promise<void> {
-    await this.page
-      .getByTestId(Header.root)
-      .getByTestId(Button.addAddress)
-      .click();
+    await this.page.getByTestId(Header.root).getByTestId(Button.addAddress).click();
   }
 
   async expectAddUserFormVisible(): Promise<void> {
@@ -142,7 +119,7 @@ export class HomeSteps {
 
   async expectAddAddressFormVisible(): Promise<void> {
     await expect(this.page).toHaveURL(/\/Forms\/Address\/AddAddress/);
-    await expect(this.page.locator(AddAddressPage.heading)).toBeVisible();
+    await expect(this.page.getByRole('heading', { name: AddAddressPage.heading })).toBeVisible();
   }
 
   async addUser(user: AddUserDTO): Promise<void> {
@@ -179,11 +156,11 @@ export class HomeSteps {
   async addAddress(address: AddAddressDTO): Promise<void> {
     await this.openAddAddressForm();
     await this.expectAddAddressFormVisible();
-    await this.page.locator(AddAddressPage.street).fill(address.street);
-    await this.page.locator(AddAddressPage.city).fill(address.city);
-    await this.page.locator(AddAddressPage.state).fill(address.state);
-    await this.page.locator(AddAddressPage.zipCode).fill(address.zipCode);
-    await this.page.locator(AddAddressPage.createButton).click();
+    await this.page.getByLabel(AddAddressPage.street).fill(address.street);
+    await this.page.getByLabel(AddAddressPage.city).fill(address.city);
+    await this.page.getByLabel(AddAddressPage.state).fill(address.state);
+    await this.page.getByLabel(AddAddressPage.zipCode).fill(address.zipCode);
+    await this.page.getByRole('button', { name: AddAddressPage.createButton }).click();
     await this.page.waitForURL((url) => url.pathname === '/');
   }
 
