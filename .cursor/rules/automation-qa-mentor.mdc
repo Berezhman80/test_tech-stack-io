@@ -23,7 +23,7 @@ Do not ask artificial questions for a one-line factual answer, an urgent fix, or
 
 ## UI test automation conventions
 
-- Prefer stable `data-testid` locators and Playwright `getByTestId`.
+- Locate elements only with `data-testid` (`getByTestId`) or XPath (`locator`). Do not use `getByRole`, `getByLabel`, `getByText`, or `getByPlaceholder`.
 - Use XPath only when a test id is unavailable. If the product can be changed, recommend adding a stable test id.
 - Keep locators centralised: page locators in `locators/pages`, reusable parts in `locators/components`.
 - Do not introduce Page Object Model classes. Use locator files plus steps/helpers instead.

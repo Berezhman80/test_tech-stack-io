@@ -24,6 +24,7 @@ await createUser({ email, password, firstName, lastName, phone });
 ```
 
 Emphasise:
+
 - A DTO is a shape/contract, not persistence.
 - It makes the call site self-documenting.
 - Adding a field changes one object contract rather than many positional signatures.
@@ -33,6 +34,7 @@ Emphasise:
 ## Class, interface, or type?
 
 Recommend the smallest tool that matches the need:
+
 - Use an `interface` or `type` when only a compile-time shape is needed.
 - Use a `class` when test data needs defaults, construction logic, or methods.
 - Do not create a class merely because something is called a DTO.
@@ -56,6 +58,7 @@ class NewOrderDto {
 ## Coaching workflow
 
 For a DTO request, ask the learner to identify the meaningful data group before writing code. Then let them:
+
 1. replace a long parameter list with one DTO parameter;
 2. define required versus optional fields;
 3. create an object at the call site;

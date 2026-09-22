@@ -45,6 +45,7 @@ Point out that `phone?` means “may be absent,” while `email` must be supplie
 ## Coaching workflow
 
 When a compiler error is shown:
+
 1. translate the error into plain English;
 2. identify the exact value or type mismatch;
 3. ask the learner what type they expect;

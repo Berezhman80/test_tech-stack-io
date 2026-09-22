@@ -26,19 +26,17 @@ export class LoginSteps {
     await this.page.waitForURL((url) => url.pathname === '/');
   }
 
+  async fillLoginInputs(username?: string, password?: string): Promise<void> {
+    if (username) {
+      await this.page.getByTestId(Input.username).getByTestId(Input.field).fill(username);
+    }
+
+    if (password) {
+      await this.page.getByTestId(Input.password).getByTestId(Input.field).fill(password);
+    }
+  }
+
   async submitEmptyForm(): Promise<void> {
-    await this.page.locator(SignInPage.signInButton).click();
-  }
-
-  async submitWithPasswordOnly(): Promise<void> {
-    const user = this.getValidUser();
-    await this.page.getByTestId(Input.password).getByTestId(Input.field).fill(user.password);
-    await this.page.locator(SignInPage.signInButton).click();
-  }
-
-  async submitWithUsernameOnly(): Promise<void> {
-    const user = this.getValidUser();
-    await this.page.getByTestId(Input.username).getByTestId(Input.field).fill(user.username);
     await this.page.locator(SignInPage.signInButton).click();
   }
 

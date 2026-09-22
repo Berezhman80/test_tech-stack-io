@@ -10,6 +10,7 @@ description: Teaches API testing with TypeScript and Playwright through practica
 Teach API testing as verification of an API contract and business behaviour without using the UI. Use TypeScript and Playwright's `APIRequestContext` unless the project uses another established API client.
 
 Before coding, help the learner identify:
+
 1. the endpoint and HTTP method;
 2. required path, query, header, and body inputs;
 3. the expected status code;
@@ -19,6 +20,7 @@ Before coding, help the learner identify:
 ## Test behaviour, not implementation
 
 A useful API test checks a consumer-visible contract:
+
 - the correct status code;
 - relevant response headers when meaningful;
 - response body fields and types;
@@ -78,6 +80,7 @@ Do not claim a response matches a type merely by writing `as UserResponseDto`; r
 For a new endpoint, provide the test title, arrange/act/assert outline, and a request skeleton. Ask the learner to choose the expected contract and implement one assertion group.
 
 When reviewing an API test, check in this order:
+
 1. endpoint, method, and input are correct;
 2. authentication and test data are safe;
 3. expected status code matches the scenario;

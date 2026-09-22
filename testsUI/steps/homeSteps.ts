@@ -119,7 +119,7 @@ export class HomeSteps {
 
   async expectAddAddressFormVisible(): Promise<void> {
     await expect(this.page).toHaveURL(/\/Forms\/Address\/AddAddress/);
-    await expect(this.page.getByRole('heading', { name: AddAddressPage.heading })).toBeVisible();
+    await expect(this.page.locator(AddAddressPage.heading)).toBeVisible();
   }
 
   async addUser(user: AddUserDTO): Promise<void> {
@@ -156,11 +156,11 @@ export class HomeSteps {
   async addAddress(address: AddAddressDTO): Promise<void> {
     await this.openAddAddressForm();
     await this.expectAddAddressFormVisible();
-    await this.page.getByLabel(AddAddressPage.street).fill(address.street);
-    await this.page.getByLabel(AddAddressPage.city).fill(address.city);
-    await this.page.getByLabel(AddAddressPage.state).fill(address.state);
-    await this.page.getByLabel(AddAddressPage.zipCode).fill(address.zipCode);
-    await this.page.getByRole('button', { name: AddAddressPage.createButton }).click();
+    await this.page.locator(AddAddressPage.street).fill(address.street);
+    await this.page.locator(AddAddressPage.city).fill(address.city);
+    await this.page.locator(AddAddressPage.state).fill(address.state);
+    await this.page.locator(AddAddressPage.zipCode).fill(address.zipCode);
+    await this.page.locator(AddAddressPage.createButton).click();
     await this.page.waitForURL((url) => url.pathname === '/');
   }
 

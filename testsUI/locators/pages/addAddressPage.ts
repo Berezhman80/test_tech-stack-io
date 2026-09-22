@@ -1,10 +1,8 @@
 export default class AddAddressPage {
-  // Product has no data-testid on this form yet. Request:
-  // input-StreetAddress, input-City, input-State, input-ZipCode, button-Create
-  static heading = 'Add Address';
-  static street = 'Street Address';
-  static city = 'City';
-  static state = 'State';
-  static zipCode = 'Zip Code';
-  static createButton = 'Create';
+  static heading = '//h3[normalize-space()="Add Address"]';
+  static street = '//input[@id="Address_StreetAddress"]';
+  static city = '//input[@id="Address_City"]';
+  static state = '//input[@id="Address_State"]';
+  static zipCode = '//input[@id="Address_ZipCode"]';
+  static createButton = '//button[@type="submit" and normalize-space()="Create"]';
 }
