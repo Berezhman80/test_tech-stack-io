@@ -17,12 +17,12 @@ export class LoginSteps {
   }
 
   async loginWithValidCredentials(): Promise<void> {
-    const { username, password } = this.getCredentials();
-    const user = new UserDTO();
-    user.username = username;
-    user.password = password;
+    await this.login(this.getValidUser());
+    await this.page.waitForURL((url) => url.pathname === '/');
+  }
 
-    await this.login(user);
+  async loginWithAdminCredentials(): Promise<void> {
+    await this.login(this.getAdminUser());
     await this.page.waitForURL((url) => url.pathname === '/');
   }
 
@@ -31,18 +31,14 @@ export class LoginSteps {
   }
 
   async submitWithPasswordOnly(): Promise<void> {
-    await this.page
-      .getByTestId(Input.password)
-      .getByTestId(Input.field)
-      .fill(this.getCredentials().password);
+    const user = this.getValidUser();
+    await this.page.getByTestId(Input.password).getByTestId(Input.field).fill(user.password);
     await this.page.locator(SignInPage.signInButton).click();
   }
 
   async submitWithUsernameOnly(): Promise<void> {
-    await this.page
-      .getByTestId(Input.username)
-      .getByTestId(Input.field)
-      .fill(this.getCredentials().username);
+    const user = this.getValidUser();
+    await this.page.getByTestId(Input.username).getByTestId(Input.field).fill(user.username);
     await this.page.locator(SignInPage.signInButton).click();
   }
 
@@ -62,14 +58,27 @@ export class LoginSteps {
     );
   }
 
-  private getCredentials(): { username: string; password: string } {
-    const username = process.env.LOGIN;
-    const password = process.env.PASSWORD;
+  private getValidUser(): UserDTO {
+    const user = new UserDTO();
+    user.username = process.env.LOGIN ?? '';
+    user.password = process.env.PASSWORD ?? '';
 
-    if (!username || !password) {
+    if (!user.username || !user.password) {
       throw new Error('LOGIN and PASSWORD environment variables must be set');
     }
 
-    return { username, password };
+    return user;
+  }
+
+  private getAdminUser(): UserDTO {
+    const user = new UserDTO();
+    user.username = process.env.ADMIN_LOGIN ?? '';
+    user.password = process.env.ADMIN_PASSWORD ?? '';
+
+    if (!user.username || !user.password) {
+      throw new Error('ADMIN_LOGIN and ADMIN_PASSWORD environment variables must be set');
+    }
+
+    return user;
   }
 }

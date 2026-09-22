@@ -1,0 +1,126 @@
+- generic [active] [ref=f1e1]:
+  - banner [ref=f1e2]:
+    - navigation [ref=f1e3]:
+      - generic [ref=f1e4]:
+        - link "Trainees website" [ref=f1e5] [cursor=pointer]:
+          - /url: /
+        - generic [ref=f1e7]:
+          - list [ref=f1e8]:
+            - listitem [ref=f1e9]:
+              - link "Home" [ref=f1e10] [cursor=pointer]:
+                - /url: /
+            - listitem [ref=f1e11]:
+              - link "Add User" [ref=f1e12] [cursor=pointer]:
+                - /url: /Forms/User/AddUser
+            - listitem [ref=f1e13]:
+              - link "Add Address" [ref=f1e14] [cursor=pointer]:
+                - /url: /Forms/Address/AddAddress
+          - link "Logout" [ref=f1e16] [cursor=pointer]:
+            - /url: /Logout?returnUrl=%2F
+  - main [ref=f1e17]:
+    - generic [ref=f1e18]:
+      - heading "Users and Addresses" [level=1] [ref=f1e19]
+      - generic [ref=f1e20]: Manage users and their addresses
+    - generic [ref=f1e21]:
+      - generic [ref=f1e24]:
+        - generic [ref=f1e25]:
+          - generic [ref=f1e26]:
+            - heading "Users" [level=2] [ref=f1e27]
+            - generic [ref=f1e28]: "Total: 4"
+          - link "+ Add user" [ref=f1e29] [cursor=pointer]:
+            - /url: /Forms/User/AddUser
+        - table [ref=f1e31]:
+          - rowgroup [ref=f1e32]:
+            - row [ref=f1e33]:
+              - columnheader [ref=f1e34]
+              - columnheader "User Name" [ref=f1e35]
+              - columnheader "Year of Birth" [ref=f1e36]
+              - columnheader "Gender" [ref=f1e37]
+              - columnheader "Actions" [ref=f1e38]
+          - rowgroup [ref=f1e39]:
+            - row [ref=f1e40]:
+              - cell [ref=f1e41]:
+                - img "profile" [ref=f1e42]
+              - cell "Oleg" [ref=f1e43]
+              - cell "1993" [ref=f1e44]
+              - cell "Male" [ref=f1e45]
+              - cell [ref=f1e47]:
+                - link "Edit" [ref=f1e48] [cursor=pointer]:
+                  - /url: /Forms/User/EditUser/6b9864da-d56b-4b1e-b2bc-a7624645fdcb
+                - link "Delete" [ref=f1e49] [cursor=pointer]:
+                  - /url: /Forms/User/DeleteUser/6b9864da-d56b-4b1e-b2bc-a7624645fdcb
+            - row [ref=f1e50]:
+              - cell [ref=f1e51]:
+                - img "profile" [ref=f1e52]
+              - cell "Dasha" [ref=f1e53]
+              - cell "1992" [ref=f1e54]
+              - cell "Female" [ref=f1e55]
+              - cell [ref=f1e57]:
+                - link "Edit" [ref=f1e58] [cursor=pointer]:
+                  - /url: /Forms/User/EditUser/d732f0ef-65f9-4a9e-bf22-766b8baeab05
+                - link "Delete" [ref=f1e59] [cursor=pointer]:
+                  - /url: /Forms/User/DeleteUser/d732f0ef-65f9-4a9e-bf22-766b8baeab05
+            - row [ref=f1e60]:
+              - cell [ref=f1e61]:
+                - img "profile" [ref=f1e62]
+              - cell "Oksana" [ref=f1e63]
+              - cell "1996" [ref=f1e64]
+              - cell "Female" [ref=f1e65]
+              - cell [ref=f1e67]:
+                - link "Edit" [ref=f1e68] [cursor=pointer]:
+                  - /url: /Forms/User/EditUser/b39f00e1-211c-4de9-83a0-989b636293ec
+                - link "Delete" [ref=f1e69] [cursor=pointer]:
+                  - /url: /Forms/User/DeleteUser/b39f00e1-211c-4de9-83a0-989b636293ec
+            - row [ref=f1e70]:
+              - cell [ref=f1e71]:
+                - img "profile" [ref=f1e72]
+              - cell "Vitalii" [ref=f1e73]
+              - cell "1990" [ref=f1e74]
+              - cell "Male" [ref=f1e75]
+              - cell [ref=f1e77]:
+                - link "Edit" [ref=f1e78] [cursor=pointer]:
+                  - /url: /Forms/User/EditUser/be2a7293-0027-4412-b287-4c5f9134ef10
+                - link "Delete" [ref=f1e79] [cursor=pointer]:
+                  - /url: /Forms/User/DeleteUser/be2a7293-0027-4412-b287-4c5f9134ef10
+      - generic [ref=f1e82]:
+        - generic [ref=f1e83]:
+          - generic [ref=f1e84]:
+            - heading "Addresses" [level=2] [ref=f1e85]
+            - generic [ref=f1e86]: "Total: 3"
+          - link "+ Add address" [ref=f1e87] [cursor=pointer]:
+            - /url: /Forms/Address/AddAddress
+        - table [ref=f1e89]:
+          - rowgroup [ref=f1e90]:
+            - row [ref=f1e91]:
+              - columnheader "Street Address" [ref=f1e92]
+              - columnheader "City" [ref=f1e93]
+              - columnheader "State" [ref=f1e94]
+              - columnheader "Zip Code" [ref=f1e95]
+              - columnheader "Actions" [ref=f1e96]
+          - rowgroup [ref=f1e97]:
+            - row [ref=f1e98]:
+              - cell "178 Broadway" [ref=f1e99]
+              - cell "New York" [ref=f1e100]
+              - cell "NY" [ref=f1e101]
+              - cell "11211" [ref=f1e103]
+              - cell [ref=f1e104]:
+                - link "Delete" [ref=f1e105] [cursor=pointer]:
+                  - /url: /Forms/Address/DeleteAddress/2fe1683a-10b1-4e3b-91d9-273d7e6f0015
+            - row [ref=f1e106]:
+              - cell "201 W Austin Blvd" [ref=f1e107]
+              - cell "Nevada" [ref=f1e108]
+              - cell "MO" [ref=f1e109]
+              - cell "64772" [ref=f1e111]
+              - cell [ref=f1e112]:
+                - link "Delete" [ref=f1e113] [cursor=pointer]:
+                  - /url: /Forms/Address/DeleteAddress/b6055703-dd05-4f05-8a11-894508e1463c
+            - row [ref=f1e114]:
+              - cell "205 E Houston St" [ref=f1e115]
+              - cell "New York" [ref=f1e116]
+              - cell "NY" [ref=f1e117]
+              - cell "10002" [ref=f1e119]
+              - cell [ref=f1e120]:
+                - link "Delete" [ref=f1e121] [cursor=pointer]:
+                  - /url: /Forms/Address/DeleteAddress/1c59a1df-5c78-483b-8228-55049715afaa
+  - contentinfo [ref=f1e122]:
+    - generic [ref=f1e123]: © 2026 - Techstack
