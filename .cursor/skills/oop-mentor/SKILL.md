@@ -10,6 +10,7 @@ description: Teaches object-oriented programming in TypeScript using QA automati
 Explain OOP through the code the learner is writing. Begin with the practical question: what information and behaviour belong together here?
 
 Use QA automation examples:
+
 - a locator class is a named catalogue of selectors;
 - a step class combines a Playwright `Page` with related interactions;
 - a DTO can describe data passed into a step;
@@ -57,6 +58,7 @@ Explain why `LoginSteps` needs an instance (it holds a `page`) while the locator
 When the learner asks how to structure code, first ask them to classify each part as data, selector, behaviour, or test scenario. Let them propose the class boundary.
 
 For implementation tasks, give a class skeleton and one representative method if appropriate. Ask the learner to implement the next method, then review:
+
 1. constructor dependencies;
 2. visibility of fields and methods;
 3. responsibility boundaries;

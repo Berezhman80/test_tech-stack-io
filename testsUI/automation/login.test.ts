@@ -1,6 +1,7 @@
 import { test } from '@playwright/test';
 import { HomeSteps } from '../steps/homeSteps.js';
 import { LoginSteps } from '../steps/loginSteps.js';
+import SignInPage from '../locators/pages/signInPage.js';
 
 const SITE_TITLE = 'Trainees website';
 
@@ -35,13 +36,15 @@ test.describe('Login', () => {
     await loginSteps.expectPasswordRequiredMessage();
   });
 
-  test('Check that empty username shows confirmation', async () => {
-    await loginSteps.submitWithPasswordOnly();
+  test('Check that empty username shows confirmation', async ({ page }) => {
+    await loginSteps.fillLoginInputs(undefined, process.env.PASSWORD);
+    await page.locator(SignInPage.signInButton).click();
     await loginSteps.expectUsernameRequiredMessage();
   });
 
-  test('Check that empty password shows confirmation', async () => {
-    await loginSteps.submitWithUsernameOnly();
+  test('Check that empty password shows confirmation', async ({ page }) => {
+    await loginSteps.fillLoginInputs(process.env.LOGIN, undefined);
+    await page.locator(SignInPage.signInButton).click();
     await loginSteps.expectPasswordRequiredMessage();
   });
 });

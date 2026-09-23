@@ -8,7 +8,6 @@ dotenv.config({
 });
 
 export default defineConfig({
-  testDir: './testsUI/automation',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: 0,
@@ -23,7 +22,12 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
+      testDir: './testsUI/automation',
       use: { ...devices['Desktop Chrome'], headless: false },
+    },
+    {
+      name: 'api',
+      testDir: './testsAPI/automation',
     },
     // {
     //   name: 'chrome',
