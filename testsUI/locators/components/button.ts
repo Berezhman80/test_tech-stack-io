@@ -4,6 +4,7 @@ export default class Button {
   static addUser = 'addUser-button';
   static addAddress = 'addAddress-button';
   static create = 'button-Create';
+  static update = 'button-Update';
   static cancel = 'button-Cancel';
   static delete = 'button-Delete';
   static edit = 'button-Edit';

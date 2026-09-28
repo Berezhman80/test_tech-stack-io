@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
-import UserResponseDto from '../DTO/user.response.dto.js';
 import { AuthApiSteps } from '../steps/authApiSteps.js';
 import { UserApiSteps } from '../steps/userApiSteps.js';
+import UserResponseDto from '../DTO/user.response.dto.js';
 
 test.describe('User API', () => {
   let authApiSteps: AuthApiSteps;
@@ -115,7 +115,7 @@ test.describe('User API', () => {
     });
 
     test('Check that a user cannot be deleted without admin rights', async () => {
-      const user = userApiSteps.buildUser('UserDelete');
+      const user = userApiSteps.buildUser('NoAdmin');
       const created = await userApiSteps.createUserForTest(token, user);
       createdId = created.id;
 
@@ -125,7 +125,7 @@ test.describe('User API', () => {
     });
 
     test('Check that an admin can delete a user', async () => {
-      const user = userApiSteps.buildUser('AdminDelete');
+      const user = userApiSteps.buildUser('AdmDel');
       const created = await userApiSteps.createUserForTest(token, user);
       createdId = created.id;
 
