@@ -11,6 +11,8 @@ jobs:
     env:
       LOGIN: ${{ secrets.LOGIN }}
       PASSWORD: ${{ secrets.PASSWORD }}
+      ADMIN_LOGIN: ${{ secrets.ADMIN_LOGIN }}
+      ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -20,11 +22,20 @@ jobs:
         run: npm ci
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
-      - name: Run Playwright tests
-        run: npx playwright test
+      - name: Run UI tests
+        run: xvfb-run npx playwright test --project=chromium
+      - name: Save UI report
+        if: ${{ !cancelled() }}
+        run: mkdir -p reports && mv playwright-report reports/ui
+      - name: Run API tests
+        if: ${{ !cancelled() }}
+        run: xvfb-run npx playwright test --project=api
+      - name: Save API report
+        if: ${{ !cancelled() }}
+        run: mkdir -p reports && mv playwright-report reports/api
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
           name: playwright-report
-          path: playwright-report/
+          path: reports/
           retention-days: 30
