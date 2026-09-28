@@ -23,6 +23,9 @@ export default class HomePage {
   static userRowDelete = (userName: string) =>
     `${HomePage.userRow(userName)}//*[@data-testid="${Button.delete}"]`;
 
+  static userRowEdit = (userName: string) =>
+    `${HomePage.userRow(userName)}//*[@data-testid="${Button.edit}"]`;
+
   static userNameCell = (userName: string) =>
     `//*[@data-testid="${Table.users}"]//*[@data-testid="${Table.userName}" and normalize-space()="${userName}"]`;
 

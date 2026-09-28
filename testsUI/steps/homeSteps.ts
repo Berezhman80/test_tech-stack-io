@@ -1,6 +1,4 @@
 import { expect, type Page } from '@playwright/test';
-import AddAddressDTO from '../DTO/add.address.dto.js';
-import AddUserDTO from '../DTO/add.user.dto.js';
 import Button from '../locators/components/button.js';
 import Header from '../locators/components/header.js';
 import Input from '../locators/components/input.js';
@@ -9,7 +7,10 @@ import AddAddressPage from '../locators/pages/addAddressPage.js';
 import AddUserPage from '../locators/pages/addUserPage.js';
 import DeleteAddressPage from '../locators/pages/deleteAddressPage.js';
 import DeleteUserPage from '../locators/pages/deleteUserPage.js';
+import EditUserPage from '../locators/pages/editUserPage.js';
 import HomePage from '../locators/pages/homePage.js';
+import type AddressDto from '../../commonDto/DTO/address.dto.js';
+import AddUserDTO from '../DTO/add.user.dto.js';
 
 export class HomeSteps {
   constructor(private page: Page) {}
@@ -144,6 +145,17 @@ export class HomeSteps {
     await expect(this.page.locator(HomePage.userNameCell(user.userName))).toHaveCount(0);
   }
 
+  async editUser(current: AddUserDTO, updated: AddUserDTO): Promise<void> {
+    await this.page.locator(HomePage.userRowEdit(current.userName)).click();
+    await expect(this.page).toHaveURL(/\/Forms\/User\/EditUser\//);
+    await expect(this.page.locator(EditUserPage.heading)).toBeVisible();
+    await this.page.getByTestId(Input.gender).selectOption({ label: updated.gender });
+    await this.page.getByTestId(Input.userName).fill(updated.userName);
+    await this.page.getByTestId(Input.yearOfBirth).fill(updated.yearOfBirth);
+    await this.page.getByTestId(Button.update).click();
+    await this.page.waitForURL((url) => url.pathname === '/');
+  }
+
   async deleteUser(user: AddUserDTO): Promise<void> {
     await this.page.locator(HomePage.userRowDelete(user.userName)).click();
     await expect(this.page).toHaveURL(/\/Forms\/User\/DeleteUser\//);
@@ -153,10 +165,10 @@ export class HomeSteps {
     await this.page.waitForURL((url) => url.pathname === '/');
   }
 
-  async addAddress(address: AddAddressDTO): Promise<void> {
+  async addAddress(address: AddressDto): Promise<void> {
     await this.openAddAddressForm();
     await this.expectAddAddressFormVisible();
-    await this.page.locator(AddAddressPage.street).fill(address.street);
+    await this.page.locator(AddAddressPage.street).fill(address.streetAddress);
     await this.page.locator(AddAddressPage.city).fill(address.city);
     await this.page.locator(AddAddressPage.state).fill(address.state);
     await this.page.locator(AddAddressPage.zipCode).fill(address.zipCode);
@@ -164,24 +176,28 @@ export class HomeSteps {
     await this.page.waitForURL((url) => url.pathname === '/');
   }
 
-  async expectAddressInTable(address: AddAddressDTO): Promise<void> {
-    const row = this.page.locator(HomePage.addressRow(address.street));
+  async expectAddressInTable(address: AddressDto): Promise<void> {
+    const row = this.page.locator(HomePage.addressRow(address.streetAddress));
     await expect(row).toBeVisible();
-    await expect(row.getByTestId(Table.streetAddress)).toHaveText(address.street);
+    await expect(row.getByTestId(Table.streetAddress)).toHaveText(address.streetAddress);
     await expect(row.getByTestId(Table.city)).toHaveText(address.city);
     await expect(row.getByTestId(Table.state)).toHaveText(address.state);
     await expect(row.getByTestId(Table.zipCode)).toHaveText(address.zipCode);
   }
 
-  async expectAddressNotInTable(address: AddAddressDTO): Promise<void> {
-    await expect(this.page.locator(HomePage.streetAddressCell(address.street))).toHaveCount(0);
+  async expectAddressNotInTable(address: AddressDto): Promise<void> {
+    await expect(this.page.locator(HomePage.streetAddressCell(address.streetAddress))).toHaveCount(
+      0,
+    );
   }
 
-  async deleteAddress(address: AddAddressDTO): Promise<void> {
-    await this.page.locator(HomePage.addressRowDelete(address.street)).click();
+  async deleteAddress(address: AddressDto): Promise<void> {
+    await this.page.locator(HomePage.addressRowDelete(address.streetAddress)).click();
     await expect(this.page).toHaveURL(/\/Forms\/Address\/DeleteAddress\//);
     await expect(this.page.locator(DeleteAddressPage.heading)).toBeVisible();
-    await expect(this.page.locator(DeleteAddressPage.confirmStreet(address.street))).toBeVisible();
+    await expect(
+      this.page.locator(DeleteAddressPage.confirmStreet(address.streetAddress)),
+    ).toBeVisible();
     await this.page.getByTestId(Button.yes).click();
     await this.page.waitForURL((url) => url.pathname === '/');
   }

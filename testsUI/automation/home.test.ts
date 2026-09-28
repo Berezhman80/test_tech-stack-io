@@ -1,8 +1,8 @@
 import { test } from '@playwright/test';
-import AddAddressDTO from '../DTO/add.address.dto.js';
-import AddUserDTO from '../DTO/add.user.dto.js';
 import { HomeSteps } from '../steps/homeSteps.js';
 import { LoginSteps } from '../steps/loginSteps.js';
+import AddressDto from '../../commonDto/DTO/address.dto.js';
+import AddUserDTO from '../DTO/add.user.dto.js';
 
 const SITE_TITLE = 'Trainees website';
 
@@ -52,7 +52,7 @@ test.describe('Home page', () => {
 
   test.describe('Create and delete', () => {
     let createdUser: AddUserDTO | undefined;
-    let createdAddress: AddAddressDTO | undefined;
+    let createdAddress: AddressDto | undefined;
 
     test.beforeEach(async ({ page }) => {
       const loginSteps = new LoginSteps(page);
@@ -95,6 +95,31 @@ test.describe('Home page', () => {
       await homeSteps.expectUserInTable(user);
     });
 
+    test('Check that a user can be edited', async () => {
+      const user = new AddUserDTO();
+      const uniqueId = Date.now().toString().slice(-8);
+
+      user.userName = `Auto${uniqueId}`;
+      user.yearOfBirth = '1995';
+      user.gender = 'Male';
+
+      await homeSteps.addUser(user);
+      await homeSteps.expectUserInTable(user);
+      createdUser = user;
+
+      const updated = new AddUserDTO();
+
+      updated.userName = `Edit${uniqueId}`;
+      updated.yearOfBirth = '2001';
+      updated.gender = 'Female';
+
+      await homeSteps.editUser(user, updated);
+      createdUser = updated;
+
+      await homeSteps.expectUserNotInTable(user);
+      await homeSteps.expectUserInTable(updated);
+    });
+
     test('Check that a new user can be deleted', async () => {
       const user = new AddUserDTO();
 
@@ -112,11 +137,11 @@ test.describe('Home page', () => {
     });
 
     test('Check that a new address can be added', async () => {
-      const address = new AddAddressDTO();
+      const address = new AddressDto();
 
       const uniqueId = Date.now().toString().slice(-8);
 
-      address.street = `Street ${uniqueId}`;
+      address.streetAddress = `Street ${uniqueId}`;
       address.city = 'Kharkiv';
       address.state = 'UA';
       address.zipCode = '61000';
@@ -129,11 +154,11 @@ test.describe('Home page', () => {
     });
 
     test('Check that a new address can be deleted', async () => {
-      const address = new AddAddressDTO();
+      const address = new AddressDto();
 
       const uniqueId = Date.now().toString().slice(-8);
 
-      address.street = `Street ${uniqueId}`;
+      address.streetAddress = `Street ${uniqueId}`;
       address.city = 'Kharkiv';
       address.state = 'UA';
       address.zipCode = '61000';

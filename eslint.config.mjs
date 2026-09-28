@@ -25,6 +25,7 @@ export default defineConfig([
           assertFunctionPatterns: ['^expect'],
         },
       ],
+      'playwright/prefer-hooks-on-top': 'off',
     },
   },
 

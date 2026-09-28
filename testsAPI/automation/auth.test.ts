@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
-import AuthResponseDto from '../DTO/auth.response.dto.js';
 import { AuthApiSteps } from '../steps/authApiSteps.js';
+import AuthResponseDto from '../DTO/auth.response.dto.js';
 
 test.describe('Auth API', () => {
   let authApiSteps: AuthApiSteps;
