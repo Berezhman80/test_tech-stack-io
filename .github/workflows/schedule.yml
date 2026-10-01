@@ -1,17 +1,10 @@
-name: Playwright Tests
+name: Nightly regression
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  schedule:
+    - cron: '0 1 * * *'
+  workflow_dispatch:
 jobs:
-  desktop:
-    uses: ./.github/workflows/desktop.yml
-    secrets: inherit
-  mobile:
-    uses: ./.github/workflows/mobile.yml
-    secrets: inherit
-  api:
+  regression:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     env:
@@ -28,12 +21,12 @@ jobs:
         run: npm ci
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
-      - name: Run @api tests
-        run: xvfb-run npx playwright test --project=api --grep "@api"
+      - name: Run @regression tests
+        run: xvfb-run npx playwright test --grep "@regression"
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: playwright-report-api
+          name: playwright-report-regression
           path: playwright-report/
           if-no-files-found: warn
           retention-days: 30
