@@ -22,12 +22,19 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      testDir: './testsUI/automation',
+      testDir: './automation/test',
+      testIgnore: '**/api/**',
       use: { ...devices['Desktop Chrome'], headless: false },
     },
     {
       name: 'api',
-      testDir: './testsAPI/automation',
+      testDir: './automation/test/api',
+    },
+    {
+      name: 'mobile',
+      testDir: './automation/test',
+      testIgnore: '**/api/**',
+      use: { ...devices['iPhone 13'], headless: false },
     },
     // {
     //   name: 'chrome',

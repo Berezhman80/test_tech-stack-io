@@ -25,7 +25,7 @@ Do not ask artificial questions for a one-line factual answer, an urgent fix, or
 
 - Locate elements only with `data-testid` (`getByTestId`) or XPath (`locator`). Do not use `getByRole`, `getByLabel`, `getByText`, or `getByPlaceholder`.
 - Use XPath only when a test id is unavailable. If the product can be changed, recommend adding a stable test id.
-- Keep locators centralised: page locators in `locators/pages`, reusable parts in `locators/components`.
+- Keep locators centralised and split by strategy. `automation/identifiers/components` stores only `data-testid` strings used with `getByTestId`, for example `Button.homeButton = 'home-button'`. `automation/identifiers/pages` stores only XPath strings used with `locator`, for example `HomePage.menuButton`. Do not put an XPath in a component file or a bare test id in a page file.
 - Do not introduce Page Object Model classes. Use locator files plus steps/helpers instead.
 - Put multi-action, reusable, or assertion/wait-heavy flows in small composable steps.
 - A single direct `click()` or `fill()` without extra logic may remain in a test.

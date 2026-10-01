@@ -1,17 +1,9 @@
-name: Playwright Tests
+name: Desktop
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  workflow_call:
+  workflow_dispatch:
 jobs:
   desktop:
-    uses: ./.github/workflows/desktop.yml
-    secrets: inherit
-  mobile:
-    uses: ./.github/workflows/mobile.yml
-    secrets: inherit
-  api:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     env:
@@ -28,12 +20,12 @@ jobs:
         run: npm ci
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
-      - name: Run @api tests
-        run: xvfb-run npx playwright test --project=api --grep "@api"
+      - name: Run @desktop tests
+        run: xvfb-run npx playwright test --project=chromium --grep "@desktop"
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: playwright-report-api
+          name: playwright-report-desktop
           path: playwright-report/
           if-no-files-found: warn
           retention-days: 30
