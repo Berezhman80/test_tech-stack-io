@@ -30,3 +30,11 @@ jobs:
           path: playwright-report/
           if-no-files-found: warn
           retention-days: 30
+      - name: Notify Slack
+        if: ${{ success() || failure() }}
+        uses: slackapi/slack-github-action@v4.0.0
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            text: "Nightly regression: ${{ job.status }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
