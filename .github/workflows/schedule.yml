@@ -66,9 +66,7 @@ jobs:
             const total = bucket.expected + bucket.unexpected + bucket.flaky + bucket.skipped;
             return [
               label,
-              `Total: ${total}`,
-              `Passed: ${bucket.expected} ✅`,
-              `Failed: ${bucket.unexpected} ❌`,
+              `Total: ${total} | Passed: ${bucket.expected} ✅ | Failed: ${bucket.unexpected} ❌`,
             ].join('\n');
           }
 
