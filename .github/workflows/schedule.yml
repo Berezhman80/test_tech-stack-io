@@ -39,13 +39,44 @@ jobs:
           node --input-type=module <<'EOF'
           import { readFileSync, appendFileSync } from 'node:fs';
 
-          const { stats } = JSON.parse(readFileSync('results.json', 'utf8'));
-          const total = stats.expected + stats.unexpected + stats.flaky + stats.skipped;
+          const report = JSON.parse(readFileSync('results.json', 'utf8'));
+          const counts = {};
 
-          appendFileSync(
-            process.env.GITHUB_OUTPUT,
-            `total=${total}\npassed=${stats.expected}\nfailed=${stats.unexpected}\n`,
-          );
+          function walk(suite) {
+            for (const spec of suite.specs ?? []) {
+              for (const test of spec.tests ?? []) {
+                const bucket = counts[test.projectName] ?? {
+                  expected: 0,
+                  unexpected: 0,
+                  flaky: 0,
+                  skipped: 0,
+                };
+                bucket[test.status] += 1;
+                counts[test.projectName] = bucket;
+              }
+            }
+            for (const child of suite.suites ?? []) walk(child);
+          }
+
+          for (const suite of report.suites ?? []) walk(suite);
+
+          function section(label, bucket = { expected: 0, unexpected: 0, flaky: 0, skipped: 0 }) {
+            const total = bucket.expected + bucket.unexpected + bucket.flaky + bucket.skipped;
+            return [
+              label,
+              `Total: ${total}`,
+              `Passed: ${bucket.expected} ✅`,
+              `Failed: ${bucket.unexpected} ❌`,
+            ].join('\n');
+          }
+
+          const summary = [
+            section('UI Desktop', counts.chromium),
+            '',
+            section('UI Mobile', counts.mobile),
+          ].join('\n');
+
+          appendFileSync(process.env.GITHUB_OUTPUT, `summary<<EOF\n${summary}\nEOF\n`);
           EOF
       - name: Notify Slack
         if: ${{ success() || failure() }}
@@ -55,7 +86,5 @@ jobs:
           webhook-type: incoming-webhook
           payload: |
             text: |
-              Total: ${{ steps.counts.outputs.total }}
-              Passed: ${{ steps.counts.outputs.passed }}
-              Failed: ${{ steps.counts.outputs.failed }}
+              ${{ steps.counts.outputs.summary }}
               ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
