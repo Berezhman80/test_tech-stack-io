@@ -71,9 +71,9 @@ jobs:
           }
 
           const summary = [
-            section('UI Desktop', counts.chromium),
+            section('*UI Desktop:*', counts.chromium),
             '',
-            section('UI Mobile', counts.mobile),
+            section('*UI Mobile:*', counts.mobile),
             '',
             process.env.RUN_URL,
           ].join('\n');
