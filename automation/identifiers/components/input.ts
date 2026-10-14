@@ -3,7 +3,10 @@ export default class Input {
   static password = 'password-field';
   static field = 'input';
   static errorMsg = 'error-msg';
+  static formErrorMsg = 'form-error-msg';
   static userName = 'input-UserName';
   static yearOfBirth = 'input-YearOfBirth';
   static gender = 'select-Gender';
+  static userNameError = 'inputError-UserName';
+  static yearOfBirthError = 'inputError-YearOfBirth';
 }

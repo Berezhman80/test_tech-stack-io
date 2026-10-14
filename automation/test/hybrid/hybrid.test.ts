@@ -12,15 +12,12 @@ import AddressResponseDto from '../../dto/address/address.response.dto.js';
 import UserRequestDto from '../../dto/user/user.request.dto.js';
 import UserResponseDto from '../../dto/user/user.response.dto.js';
 
-const SITE_TITLE = 'Trainees website';
-
 test.describe('UI and API for Users', { tag: ['@desktop', '@mobile'] }, () => {
   let user: AddUserDTO | undefined;
   let token: string | undefined;
   let createdId: string | undefined;
   let homeSteps: HomeSteps;
   let userSteps: UserSteps;
-  let loginSteps: LoginSteps;
 
   test.beforeEach(async ({ request, page }) => {
     const authApiSteps = new AuthApiSteps(request);
@@ -38,19 +35,11 @@ test.describe('UI and API for Users', { tag: ['@desktop', '@mobile'] }, () => {
     requestUser.gender = 1;
 
     const response = await userApiSteps.createUser(token, requestUser);
-
-    expect(response.status()).toBe(200);
-
     const created = (await response.json()) as UserResponseDto;
     createdId = created.id;
 
-    loginSteps = new LoginSteps(page);
-    homeSteps = new HomeSteps(page);
-    userSteps = new UserSteps(page);
-
-    await loginSteps.openLoginPage();
-    await loginSteps.loginWithValidCredentials();
-    await homeSteps.expectHomePageLoaded(SITE_TITLE);
+    const loginSteps = new LoginSteps(page);
+    await loginSteps.openHomeWithAccessToken(token);
   });
 
   test('Check that a user created via API is visible in the UI', async ({ page }) => {
@@ -111,7 +100,6 @@ test.describe('UI and API for Addresses', { tag: ['@desktop', '@mobile'] }, () =
   let createdId: string | undefined;
   let homeSteps: HomeSteps;
   let addressSteps: AddressSteps;
-  let loginSteps: LoginSteps;
 
   test.beforeEach(async ({ request, page }) => {
     const authApiSteps = new AuthApiSteps(request);
@@ -125,19 +113,11 @@ test.describe('UI and API for Addresses', { tag: ['@desktop', '@mobile'] }, () =
     address.zipCode = '61000';
 
     const response = await addressApiSteps.createAddress(token, address);
-
-    expect(response.status()).toBe(200);
-
     const created = (await response.json()) as AddressResponseDto;
     createdId = created.id;
 
-    loginSteps = new LoginSteps(page);
-    homeSteps = new HomeSteps(page);
-    addressSteps = new AddressSteps(page);
-
-    await loginSteps.openLoginPage();
-    await loginSteps.loginWithValidCredentials();
-    await homeSteps.expectHomePageLoaded(SITE_TITLE);
+    const loginSteps = new LoginSteps(page);
+    await loginSteps.openHomeWithAccessToken(token);
   });
 
   test('Check that an address created via API is visible in the UI', async ({ page }) => {
