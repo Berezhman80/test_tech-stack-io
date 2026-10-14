@@ -35,9 +35,11 @@ jobs:
       - name: Count test results
         id: counts
         if: always()
+        env:
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           node --input-type=module <<'EOF'
-          import { readFileSync, appendFileSync } from 'node:fs';
+          import { readFileSync, writeFileSync } from 'node:fs';
 
           const report = JSON.parse(readFileSync('results.json', 'utf8'));
           const counts = {};
@@ -74,9 +76,11 @@ jobs:
             section('UI Desktop', counts.chromium),
             '',
             section('UI Mobile', counts.mobile),
+            '',
+            process.env.RUN_URL,
           ].join('\n');
 
-          appendFileSync(process.env.GITHUB_OUTPUT, `summary<<EOF\n${summary}\nEOF\n`);
+          writeFileSync('slack-payload.json', JSON.stringify({ text: summary }));
           EOF
       - name: Notify Slack
         if: ${{ success() || failure() }}
@@ -84,7 +88,4 @@ jobs:
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
-          payload: |
-            text: |
-              ${{ steps.counts.outputs.summary }}
-              ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          payload-file-path: slack-payload.json
