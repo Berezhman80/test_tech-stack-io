@@ -51,6 +51,56 @@ export class UserSteps {
     await this.page.waitForURL((url) => url.pathname === '/');
   }
 
+  async submitAddUserForm(user: AddUserDTO): Promise<void> {
+    await this.page.goto('/');
+    await this.homeSteps.openAddUserForm();
+    await this.homeSteps.expectAddUserFormVisible();
+    await this.page.getByTestId(Input.gender).selectOption({ label: user.gender });
+    await this.page.getByTestId(Input.userName).fill(user.userName);
+    await this.page.getByTestId(Input.yearOfBirth).fill(user.yearOfBirth);
+    await this.page.getByTestId(Button.create).click();
+  }
+
+  async expectCreatedUser(user: AddUserDTO): Promise<void> {
+    await this.page.waitForURL((url) => url.pathname === '/');
+    await this.expectUserInTable(user);
+  }
+
+  async expectAddUserCase(
+    user: AddUserDTO,
+    nameError?: string,
+    yearError?: string,
+  ): Promise<AddUserDTO[]> {
+    await this.submitAddUserForm(user);
+
+    if (nameError || yearError) {
+      await this.expectUserValidation(nameError, yearError);
+      return [];
+    }
+
+    await this.expectCreatedUser(user);
+    return [user];
+  }
+
+  async expectUserValidation(nameError?: string, yearError?: string): Promise<void> {
+    await expect(this.page).toHaveURL(/\/Forms\/User\/AddUser/);
+
+    const name = this.page.getByTestId(Input.userNameError);
+    const year = this.page.getByTestId(Input.yearOfBirthError);
+
+    if (nameError) {
+      await expect(name).toHaveText(nameError);
+    } else {
+      await expect(name).toBeEmpty();
+    }
+
+    if (yearError) {
+      await expect(year).toHaveText(yearError);
+    } else {
+      await expect(year).toBeEmpty();
+    }
+  }
+
   async expectUserInTable(user: AddUserDTO): Promise<void> {
     const row = this.page.locator(HomePage.userRow(user.userName));
     await expect(row).toBeVisible();

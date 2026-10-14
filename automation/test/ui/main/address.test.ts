@@ -1,24 +1,20 @@
 import { test } from '@playwright/test';
 import AddressDto from '../../../dto/address/address.dto.js';
+import { AuthApiSteps } from '../../../steps/api/authApiSteps.js';
 import { AddressSteps } from '../../../steps/ui/main/addressSteps.js';
-import { HomeSteps } from '../../../steps/ui/main/homeSteps.js';
 import { LoginSteps } from '../../../steps/ui/login/loginSteps.js';
 
-const SITE_TITLE = 'Trainees website';
-
 test.describe('Addresses', { tag: ['@desktop', '@mobile', '@regression'] }, () => {
-  let homeSteps: HomeSteps;
   let addressSteps: AddressSteps;
   let createdAddress: AddressDto | undefined;
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, request }) => {
+    const authApiSteps = new AuthApiSteps(request);
     const loginSteps = new LoginSteps(page);
-    homeSteps = new HomeSteps(page);
     addressSteps = new AddressSteps(page);
 
-    await loginSteps.openLoginPage();
-    await loginSteps.loginWithAdminCredentials();
-    await homeSteps.expectHomePageLoaded(SITE_TITLE);
+    const token = await authApiSteps.getAdminAccessToken();
+    await loginSteps.openHomeWithAccessToken(token);
   });
 
   test.afterEach(async ({ page }) => {
@@ -63,5 +59,18 @@ test.describe('Addresses', { tag: ['@desktop', '@mobile', '@regression'] }, () =
 
     await addressSteps.deleteAddress(address);
     await addressSteps.expectAddressNotInTable(address);
+  });
+
+  test('Check that an address with an invalid zip code is rejected', async () => {
+    const address = new AddressDto();
+
+    address.streetAddress = 'Test Street';
+    address.city = 'Kharkiv';
+    address.state = 'KH';
+    // A valid Zip Code is 5 digits, 9 digits, or 5 digits, a hyphen, and 4 digits.
+    address.zipCode = '1234A';
+
+    await addressSteps.submitAddAddressForm(address);
+    await addressSteps.expectOnlyZipCodeInvalid();
   });
 });

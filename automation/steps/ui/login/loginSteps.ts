@@ -10,6 +10,21 @@ export class LoginSteps {
     await this.page.goto('/Login');
   }
 
+  async openHomeWithAccessToken(token: string): Promise<void> {
+    await this.page.context().addCookies([
+      {
+        name: 'access_token',
+        value: token,
+        url: 'https://traineeautomation.azurewebsites.net',
+        httpOnly: true,
+        secure: true,
+        sameSite: 'Lax',
+      },
+    ]);
+
+    await this.page.goto('/');
+  }
+
   async login(user: UserDTO): Promise<void> {
     await this.page.getByTestId(Input.username).getByTestId(Input.field).fill(user.username);
     await this.page.getByTestId(Input.password).getByTestId(Input.field).fill(user.password);
@@ -24,6 +39,20 @@ export class LoginSteps {
   async loginWithAdminCredentials(): Promise<void> {
     await this.login(this.getAdminUser());
     await this.page.waitForURL((url) => url.pathname === '/');
+  }
+
+  async loginWithInvalidPassword(): Promise<void> {
+    const user = this.getValidUser();
+    user.password = `${user.password}x`;
+
+    await this.login(user);
+  }
+
+  async loginWithInvalidUsername(): Promise<void> {
+    const user = this.getValidUser();
+    user.username = `${user.username}x`;
+
+    await this.login(user);
   }
 
   async fillLoginInputs(username?: string, password?: string): Promise<void> {
@@ -53,6 +82,12 @@ export class LoginSteps {
   async expectPasswordRequiredMessage(): Promise<void> {
     await expect(this.page.getByTestId(Input.password).getByTestId(Input.errorMsg)).toHaveText(
       'Password is required.',
+    );
+  }
+
+  async expectInvalidCredentialsMessage(): Promise<void> {
+    await expect(this.page.getByTestId(Input.formErrorMsg)).toHaveText(
+      'Invalid username or password.',
     );
   }
 
