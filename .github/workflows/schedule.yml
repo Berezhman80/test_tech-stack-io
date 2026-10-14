@@ -22,7 +22,9 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run @regression tests
-        run: xvfb-run npx playwright test --grep "@regression"
+        run: xvfb-run npx playwright test --grep "@regression" --reporter=html --reporter=json
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_NAME: results.json
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
@@ -30,6 +32,21 @@ jobs:
           path: playwright-report/
           if-no-files-found: warn
           retention-days: 30
+      - name: Count test results
+        id: counts
+        if: always()
+        run: |
+          node --input-type=module <<'EOF'
+          import { readFileSync, appendFileSync } from 'node:fs';
+
+          const { stats } = JSON.parse(readFileSync('results.json', 'utf8'));
+          const total = stats.expected + stats.unexpected + stats.flaky + stats.skipped;
+
+          appendFileSync(
+            process.env.GITHUB_OUTPUT,
+            `total=${total}\npassed=${stats.expected}\nfailed=${stats.unexpected}\n`,
+          );
+          EOF
       - name: Notify Slack
         if: ${{ success() || failure() }}
         uses: slackapi/slack-github-action@v4.0.0
@@ -37,4 +54,8 @@ jobs:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
-            text: "Nightly regression: ${{ job.status }}\n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            text: |
+              Total: ${{ steps.counts.outputs.total }}
+              Passed: ${{ steps.counts.outputs.passed }}
+              Failed: ${{ steps.counts.outputs.failed }}
+              ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
