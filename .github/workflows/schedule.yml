@@ -22,7 +22,9 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run @regression tests
-        run: xvfb-run npx playwright test --grep "@regression"
+        run: xvfb-run npx playwright test --grep "@regression" --reporter=html --reporter=json
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_NAME: results.json
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
@@ -30,3 +32,58 @@ jobs:
           path: playwright-report/
           if-no-files-found: warn
           retention-days: 30
+      - name: Count test results
+        id: counts
+        if: always()
+        env:
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          node --input-type=module <<'EOF'
+          import { readFileSync, writeFileSync } from 'node:fs';
+
+          const report = JSON.parse(readFileSync('results.json', 'utf8'));
+          const counts = {};
+
+          function walk(suite) {
+            for (const spec of suite.specs ?? []) {
+              for (const test of spec.tests ?? []) {
+                const bucket = counts[test.projectName] ?? {
+                  expected: 0,
+                  unexpected: 0,
+                  flaky: 0,
+                  skipped: 0,
+                };
+                bucket[test.status] += 1;
+                counts[test.projectName] = bucket;
+              }
+            }
+            for (const child of suite.suites ?? []) walk(child);
+          }
+
+          for (const suite of report.suites ?? []) walk(suite);
+
+          function section(label, bucket = { expected: 0, unexpected: 0, flaky: 0, skipped: 0 }) {
+            const total = bucket.expected + bucket.unexpected + bucket.flaky + bucket.skipped;
+            return [
+              label,
+              `Total: ${total} | Passed: ${bucket.expected} ✅ | Failed: ${bucket.unexpected} ❌`,
+            ].join('\n');
+          }
+
+          const summary = [
+            section('*UI Desktop:*', counts.chromium),
+            '',
+            section('*UI Mobile:*', counts.mobile),
+            '',
+            process.env.RUN_URL,
+          ].join('\n');
+
+          writeFileSync('slack-payload.json', JSON.stringify({ text: summary }));
+          EOF
+      - name: Notify Slack
+        if: ${{ success() || failure() }}
+        uses: slackapi/slack-github-action@v4.0.0
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload-file-path: slack-payload.json
