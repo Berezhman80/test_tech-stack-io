@@ -1,8 +1,10 @@
 import { test } from '@playwright/test';
 import { AuthApiSteps } from '../../../steps/api/authApiSteps.js';
+import { UserApiSteps } from '../../../steps/api/userApiSteps.js';
 import { LoginSteps } from '../../../steps/ui/login/loginSteps.js';
 import { UserSteps } from '../../../steps/ui/main/userSteps.js';
 import AddUserDTO from '../../../dto/user/add.user.dto.js';
+import UserResponseDto from '../../../dto/user/user.response.dto.js';
 
 test.describe('Users', { tag: ['@desktop', '@mobile', '@regression'] }, () => {
   let userSteps: UserSteps;
@@ -17,10 +19,25 @@ test.describe('Users', { tag: ['@desktop', '@mobile', '@regression'] }, () => {
     await loginSteps.openHomeWithAccessToken(token);
   });
 
-  test.afterEach(async ({ page }) => {
+  test.afterEach(async ({ request }) => {
+    if (createdUsers.length === 0) {
+      return;
+    }
+
+    const authApiSteps = new AuthApiSteps(request);
+    const userApiSteps = new UserApiSteps(request);
+    const token = await authApiSteps.getAdminAccessToken();
+    const response = await userApiSteps.getUsers(token);
+    const users = (await response.json()) as UserResponseDto[];
+
     for (const user of createdUsers) {
-      await page.goto('/');
-      await userSteps.deleteUser(user);
+      const created = users.find(
+        (item) => item.name === user.userName && item.yearOfBirth === Number(user.yearOfBirth),
+      );
+
+      if (created) {
+        await userApiSteps.deleteUser(token, created.id);
+      }
     }
 
     createdUsers = [];

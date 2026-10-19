@@ -1,5 +1,7 @@
 import { test } from '@playwright/test';
 import AddressDto from '../../../dto/address/address.dto.js';
+import AddressResponseDto from '../../../dto/address/address.response.dto.js';
+import { AddressApiSteps } from '../../../steps/api/addressApiSteps.js';
 import { AuthApiSteps } from '../../../steps/api/authApiSteps.js';
 import { AddressSteps } from '../../../steps/ui/main/addressSteps.js';
 import { LoginSteps } from '../../../steps/ui/login/loginSteps.js';
@@ -17,13 +19,24 @@ test.describe('Addresses', { tag: ['@desktop', '@mobile', '@regression'] }, () =
     await loginSteps.openHomeWithAccessToken(token);
   });
 
-  test.afterEach(async ({ page }) => {
+  test.afterEach(async ({ request }) => {
     if (!createdAddress) {
       return;
     }
 
-    await page.goto('/');
-    await addressSteps.deleteAddress(createdAddress);
+    const authApiSteps = new AuthApiSteps(request);
+    const addressApiSteps = new AddressApiSteps(request);
+    const token = await authApiSteps.getAdminAccessToken();
+    const response = await addressApiSteps.getAddresses(token);
+    const addresses = (await response.json()) as AddressResponseDto[];
+    const created = addresses.find(
+      (address) => address.streetAddress === createdAddress?.streetAddress,
+    );
+
+    if (created) {
+      await addressApiSteps.deleteAddress(token, created.id);
+    }
+
     createdAddress = undefined;
   });
 
