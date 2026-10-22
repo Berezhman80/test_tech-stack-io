@@ -21,6 +21,18 @@ test.describe('Login', { tag: ['@desktop', '@mobile', '@regression'] }, () => {
     await homeSteps.expectHomePageLoaded(SITE_TITLE);
   });
 
+  test('Check that an invalid password is rejected', async () => {
+    await loginSteps.loginWithInvalidPassword();
+    await loginSteps.expectInvalidCredentialsMessage();
+    await loginSteps.expectSignInFormVisible();
+  });
+
+  test('Check that an invalid username is rejected', async () => {
+    await loginSteps.loginWithInvalidUsername();
+    await loginSteps.expectInvalidCredentialsMessage();
+    await loginSteps.expectSignInFormVisible();
+  });
+
   test('Check that Logout works', async () => {
     await loginSteps.loginWithValidCredentials();
     await homeSteps.expectHomePageLoaded(SITE_TITLE);

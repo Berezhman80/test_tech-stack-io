@@ -25,6 +25,27 @@ export class AddressSteps {
     await this.page.waitForURL((url) => url.pathname === '/');
   }
 
+  async submitAddAddressForm(address: AddressDto): Promise<void> {
+    await this.page.goto('/');
+    await this.homeSteps.openAddAddressForm();
+    await this.homeSteps.expectAddAddressFormVisible();
+    await this.page.locator(AddAddressPage.street).fill(address.streetAddress);
+    await this.page.locator(AddAddressPage.city).fill(address.city);
+    await this.page.locator(AddAddressPage.state).fill(address.state);
+    await this.page.locator(AddAddressPage.zipCode).fill(address.zipCode);
+    await this.page.locator(AddAddressPage.createButton).click();
+  }
+
+  async expectOnlyZipCodeInvalid(): Promise<void> {
+    await expect(this.page).toHaveURL(/\/Forms\/Address\/AddAddress/);
+    await expect(this.page.locator(AddAddressPage.zipCodeError)).toHaveText(
+      'Zip Code is incorrect',
+    );
+    await expect(this.page.locator(AddAddressPage.streetError)).toBeEmpty();
+    await expect(this.page.locator(AddAddressPage.cityError)).toBeEmpty();
+    await expect(this.page.locator(AddAddressPage.stateError)).toBeEmpty();
+  }
+
   async expectAddressInTable(address: AddressDto): Promise<void> {
     const row = this.page.locator(HomePage.addressRow(address.streetAddress));
     await expect(row).toBeVisible();

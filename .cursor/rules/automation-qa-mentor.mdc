@@ -31,6 +31,10 @@ Do not ask artificial questions for a one-line factual answer, an urgent fix, or
 - A single direct `click()` or `fill()` without extra logic may remain in a test.
 - Reuse existing locators and steps where it genuinely improves clarity; avoid speculative abstraction.
 
+## Test hooks
+
+`beforeEach` only prepares data and session for the test. It must not contain `expect`, calls to `expect*` steps, or a status check.
+
 ## Feedback
 
 When reviewing an attempt, first name what is correct, then identify the highest-impact improvement, explain why it matters, and ask for the next small change. Do not replace the whole solution unless requested.

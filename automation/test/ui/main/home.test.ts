@@ -1,20 +1,19 @@
 import { test } from '@playwright/test';
+import { AuthApiSteps } from '../../../steps/api/authApiSteps.js';
 import { HomeSteps } from '../../../steps/ui/main/homeSteps.js';
 import { LoginSteps } from '../../../steps/ui/login/loginSteps.js';
 import { UserSteps } from '../../../steps/ui/main/userSteps.js';
 
-const SITE_TITLE = 'Trainees website';
-
 test.describe('Home page', { tag: ['@desktop', '@mobile', '@regression'] }, () => {
   let homeSteps: HomeSteps;
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, request }) => {
+    const authApiSteps = new AuthApiSteps(request);
     const loginSteps = new LoginSteps(page);
     homeSteps = new HomeSteps(page);
 
-    await loginSteps.openLoginPage();
-    await loginSteps.loginWithValidCredentials();
-    await homeSteps.expectHomePageLoaded(SITE_TITLE);
+    const token = await authApiSteps.getValidAccessToken();
+    await loginSteps.openHomeWithAccessToken(token);
   });
 
   test('Check that the home page heading is displayed', async () => {
